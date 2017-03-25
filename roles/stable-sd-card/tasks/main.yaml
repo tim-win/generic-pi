@@ -1,0 +1,10 @@
+---
+# basically blow away the logs so we don't end up writing to disk so much
+# idea from here:
+# http://ideaheap.com/2013/07/stopping-sd-card-corruption-on-a-raspberry-pi/
+- name: update tmpfs mounts for /var/log
+  become: true
+  lineinfile:
+    state: present
+    line: 'none        /var/log        tmpfs   size=1M,noatime         00'
+    dest: /etc/fstab

@@ -1,0 +1,2 @@
+[all]
+hostname ansible_ssh_user=user

@@ -1,0 +1,20 @@
+---
+
+- name: Restrict password-ed ssh access
+  become: yes
+  template:
+    src: sshd_config.template
+    dest: /etc/ssh/sshd_config
+    force: yes
+
+- name: Restart SSH service
+  become: yes
+  service:
+    name: ssh
+    state: restarted
+
+- name: Add fail2ban just to be sure
+  become: yes
+  apt:
+    name: fail2ban
+    state: present

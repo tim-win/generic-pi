@@ -1,0 +1,22 @@
+---
+- hosts: all
+  vars_files:
+    - vars/common.yaml
+
+  pre_tasks:
+  - name: Print Existing Hostname
+    command: hostname
+    register: current_hostname
+
+  - debug:
+      msg: 'Current hostname: {{ current_hostname.stdout }}'
+
+  - debug:
+      msg: 'Target Hostname: {{ hostname }}'
+
+  - set_fact:
+      update_hostname: "{{current_hostname.stdout != hostname}}"
+
+  roles:
+    - role: updated-hostname
+      when: update_hostname

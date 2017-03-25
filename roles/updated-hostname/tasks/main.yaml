@@ -1,0 +1,29 @@
+---
+- name: register all key files to update
+  find:
+    paths: '/etc/ssh/'
+    pattern: 'ssh_host_*_key.pub'
+  register: etc_ssh_ls
+
+- name: Update the ssh files with new hostname.
+  become: yes
+  command: sed -i "s/$(hostname)/{{ hostname }}/" {{ item.path }}
+  with_items: "{{ etc_ssh_ls.files }}"
+
+- name: Update /etc/hosts with new hostname
+  become: yes
+  command: sed -i "s/$(hostname)/{{ hostname }}/" /etc/hosts
+
+- name: Update /etc/hostname with new hostname
+  become: yes
+  command: sed -i "s/$(hostname)/{{ hostname }}/" /etc/hostname
+
+- name: Update the damn hostname
+  become: yes
+  command: hostname {{ hostname }}
+  
+- name: Update networking
+  become: yes
+  service:
+    name: networking
+    state: restarted

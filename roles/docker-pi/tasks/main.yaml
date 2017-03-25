@@ -1,0 +1,28 @@
+---
+- name: Run hypriot install script to setup auth to cloudbutt
+  become: yes
+  script: script.deb.sh
+
+# FIXME
+# force: yes is super dangerous,
+# we can't auth and I don't know why.
+# Seriously though this should come with the OS, I would think.
+- name: Install apt-transport HTTPS, required to do authed apt list fetches
+  become: yes
+  apt:
+    name: apt-transport-https
+    state: present
+    force: yes
+
+- name: Add hypriot sources
+  become: yes
+  template:
+    src: hypriot.list.template
+    dest: /etc/apt/sources.list.d/hypriot.list
+
+- name: Install Docker via Repository
+  become: yes
+  apt:
+    name: docker-hypriot=1.10.3-1
+    state: present
+    update_cache: yes
